@@ -13,8 +13,6 @@ fs = require('fs');
 
 mongoose = require('mongoose');
 
-io = require('socket.io').listen(80);
-
 mongoose.connect('mongodb://localhost/horse');
 
 User = new mongoose.Schema({
@@ -38,13 +36,13 @@ User = new mongoose.Schema({
 
 UserModel = mongoose.model('User', User);
 
-app = express();
+app = express.createServer();
+
+io = require('socket.io').listen(app);
 
 app.use(assets());
 
 app.use(express["static"](__dirname + '/../public'));
-
-app.set('view engine', 'jade');
 
 app.get('/', function(req, res) {
   return fs.readFile(__dirname + '/../public/index.html', function(err, data) {
