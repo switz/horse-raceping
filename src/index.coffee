@@ -7,6 +7,7 @@ fs = require 'fs'
 app = express()
 # Add Connect Assets
 app.use assets()
+app.use(express.static(__dirname + '/../public'));
 # Set View Engine
 app.set 'view engine', 'jade'
 

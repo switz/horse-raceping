@@ -15,6 +15,8 @@ app = express();
 
 app.use(assets());
 
+app.use(express["static"](__dirname + '/../public'));
+
 app.set('view engine', 'jade');
 
 pages = {
