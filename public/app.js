@@ -35,5 +35,13 @@ $(function() {
     }
   });
 
+  App.Game.User = Backbone.Model.extend({
+    idAttribute: '_id'
+  });
+
+  App.Game.Users = Backbone.Collection.extend({
+    model: App.Game.User
+  });
+
   var Login = new App.Login.LoginView();
 });
