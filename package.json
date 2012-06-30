@@ -1,6 +1,6 @@
 {
-  "name": "horseraceping",
-  "version": "1.4.1-1",
+  "name": "horse",
+  "version": "1.4.1-2",
   "private": true,
   "dependencies": {
     "express": "2.5.x",

@@ -20,7 +20,6 @@ $(function() {
     render: function() {
       var template = _.template($('#start-template').html());
       $('#main').empty().html(template({}));
-      (new Audio("sounds/horseracestart.mp3")).play();
       return this;
     },
     enterGame: function() {
@@ -213,6 +212,7 @@ $(function() {
   socket.on('startGame', function (startGame) {
     if (startGame)
       gameStarted = true;
+      (new Audio("sounds/horseracestart.mp3")).play();
       console.log(startGame)
       // access startGame object
   });
