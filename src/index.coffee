@@ -2,6 +2,7 @@ express = require 'express'
 stylus = require 'stylus'
 assets = require 'connect-assets'
 http = require 'http'
+fs = require 'fs'
 
 app = express()
 # Add Connect Assets
@@ -35,8 +36,12 @@ engines =
 
 # Get root_path return index view
 app.get '/', (req, res) -> 
-  output = getMS 'phishvids.com'
-  res.render 'index'
+  fs.readFile __dirname + '/../public/index.html', (err, data) ->
+    if err
+      console.log err
+      res.end 'Error, 500'
+
+    res.end data
 
 app.get '/site/:site', (req, res) ->
   getMS req.params.site, (json) ->
