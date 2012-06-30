@@ -7,12 +7,32 @@ mongoose = require 'mongoose'
 scores = {}
 
 sites = 
-  'Yahoo' : 'meetup.com'
-  'Tumblr' : 'github.com'
-  'Meetup' : 'jquery.com'
-  'NY Times' : 'nytimes.com'
+  'Meetup' : 'meetup.com'
+  'Github' : 'github.com'
+  'jQuery' : 'jquery.com'
+  'Yahoo' : 'yahoo.com'
   'Underscore' : 'underscorejs.org'
   'LoDash' : 'lodash.com'
+
+sitesArray = [
+  name: 'Meetup'
+  url: "meetup.com"
+,
+  name: 'Github'
+  url: "github.com"
+,
+  name: 'jQuery'
+  url: "jquery.com"
+,
+  name: 'Yahoo'
+  url: "yahoo.com"
+,
+  name: 'Underscore'
+  url: "underscorejs.org"
+,
+  name: 'LoDash'
+  url: "lodash.com"
+ ]
 
 mongoose.connect 'mongodb://localhost/horse'
 
@@ -22,13 +42,21 @@ User = new mongoose.Schema
     default: 'noob'
   horse:
     type: String
-    default: 'http://'
+    default: 'meetup.com'
   bet:
     type: Number
     default: -1
   money:
     type: Number
     default: 100
+
+Horse = new mongoose.Schema
+  name: 
+    type: String
+    default: 'meetup.com'
+  odds:
+    type: String
+    default: "1/1"
 
 UserModel = mongoose.model 'User', User
 
@@ -61,7 +89,10 @@ app.get '/', (req, res) ->
 
 app.get '/site/:site', (req, res) ->
   getMS req.params.site, (json) ->
-    res.send json
+    res.json json
+
+app.get '/api/v1/horses', (req, res) ->
+  res.json sitesArray
 
 app.post '/api/v1/name', (req, res) ->
   u = new UserModel()

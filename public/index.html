@@ -19,8 +19,10 @@
     <script src="app.js"></script>
   </head>
   <body>
+    <div class="row-fluid">
     <!-- application container -->
-    <div id="main">
+      <div id="main" class="span12">
+      </div>
     </div>
     <!-- templates -->
     <script type="text/template" id="start-template">
@@ -35,8 +37,11 @@
     <script type="text/template" id="racer-template">
       <%= name %>
     </script>
+    <script type="text/template" id="racer-list-template">
+      <div class="span2"><%= name %></div>
+    </script>
     <script type="text/template" id="layout-template">
-      <div id="racer-list-container"></div>
+      <div id="racer-list-container" class="span12"></div>
       <div id="track-container"></div>
       <div id="userpanel-container"></div>
       <div id="horse-info-list-container"></div>
