@@ -4,7 +4,6 @@ assets = require 'connect-assets'
 http = require 'http'
 fs = require 'fs'
 mongoose = require 'mongoose'
-io = require('socket.io').listen(80)
 
 mongoose.connect 'mongodb://localhost/horse'
 
@@ -24,12 +23,14 @@ User = new mongoose.Schema
 
 UserModel = mongoose.model 'User', User
 
-app = express()
+app = express.createServer()
+io = require('socket.io').listen app
+
 # Add Connect Assets
 app.use assets()
-app.use(express.static(__dirname + '/../public'));
+app.use express.static(__dirname + '/../public')
 # Set View Engine
-app.set 'view engine', 'jade'
+#app.set 'view engine', 'jade'
 
 ############################
 ##                        ##
@@ -111,5 +112,6 @@ getMS = (site, callback) ->
 
 # Define Port
 port = process.env.PORT or process.env.VMC_APP_PORT or 4000
+
 # Start Server
 app.listen port, -> console.log "Listening on #{port}"
