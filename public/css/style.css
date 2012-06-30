@@ -1,0 +1,8 @@
+#start-box {
+  position: absolute;
+  width: 700px;
+  height: 400px;
+  left: 50%;
+  top: 50%;
+  margin: 0 auto;
+}
