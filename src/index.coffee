@@ -5,6 +5,7 @@ http = require 'http'
 fs = require 'fs'
 mongoose = require 'mongoose'
 scores = {}
+gameStarted = false
 
 sites = 
   'Meetup' : 'meetup.com'
@@ -102,6 +103,9 @@ app.post '/api/v1/name', (req, res) ->
 
 app.post '/api/v1/bet', (req, res) ->
   u = new UserModel()
+  if gameStarted
+    res.json
+      error: 'Game Started, sorry!'
   u.findById req.query.id, (err, user) ->
     unless err
       bet = req.query.bet
@@ -124,6 +128,7 @@ app.post '/api/v1/endgame', (req, res) ->
 
 app.get '/startGamePhish', (req, res) ->
   io.sockets.emit 'startGame', true
+  gameStarted = true
   runSites ->
     res.json scores
 

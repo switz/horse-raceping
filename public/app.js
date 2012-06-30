@@ -5,7 +5,8 @@ $(function() {
         Views:{}
       }
     , user : null
-  };
+  },
+  gameStarted = false;
   
   App.Login.Views.LoginForm = Backbone.View.extend({
     el: '#main',
@@ -89,4 +90,10 @@ $(function() {
 
 
   var Login = new App.Login.Views.LoginForm();
+
+  var socket = io.connect('http://localhost');
+  socket.on('startGame', function (startGame) {
+    if (startGame)
+      gameStarted = true;
+  });
 });
