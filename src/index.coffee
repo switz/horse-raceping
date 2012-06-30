@@ -5,6 +5,7 @@ http = require 'http'
 fs = require 'fs'
 mongoose = require 'mongoose'
 scores = {}
+gameStarted = false
 
 sites = 
   'Meetup' : 'meetup.com'
@@ -102,6 +103,9 @@ app.post '/api/v1/name', (req, res) ->
 
 app.post '/api/v1/bet', (req, res) ->
   u = new UserModel()
+  if gameStarted
+    res.json
+      error: 'Game Started, sorry!'
   u.findById req.query.id, (err, user) ->
     unless err
       bet = req.query.bet
@@ -124,6 +128,7 @@ app.post '/api/v1/endgame', (req, res) ->
 
 app.get '/startGamePhish', (req, res) ->
   io.sockets.emit 'startGame', true
+  gameStarted = true
   runSites ->
     res.json scores
 
@@ -147,18 +152,30 @@ getMS = (site, callback) ->
         site: site
         status: res.statusCode
       if output.length is 99
-        callback site, ms/100
+        callback site, ms/100, output
 
+standardDeviation = (avg, arr, callback) ->
+  total = 0
+  i = arr.length
+  while --i >= 0
+    save = (arr[i].time - avg)
+    total += save*save
+    if i is 0
+      callback Math.sqrt total / 100
 
 runSites = (callback) ->
   scores = {}
   i = 0
   for s of sites
     current = sites[s]
-    getMS current, (title, ms) ->
-      scores[title] = ms
-      if ++i is 6
-        callback()
+    getMS current, (title, avg, obj) ->
+      standardDeviation avg, obj, (total) ->
+        scores[title] = 
+          stdDev: total
+          output: obj
+        console.log total
+        if ++i is 6
+          callback()
 
 # Define Port
 port = process.env.PORT or process.env.VMC_APP_PORT or 4000
