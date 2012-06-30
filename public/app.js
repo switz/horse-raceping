@@ -25,14 +25,14 @@ $(function() {
       $.post('/api/v1/name?name='+name, function(data) {
         App.user = new App.Game.User(data);
         console.log(App.user);
-      });
       // setup layout for game;
       var layout = _.template($('#layout-template').html());
-      $('main').empty().html(layout({}));
+      $('#main').empty().html(layout({}));
       App.layout = {
         $RacerListContainer : $('#racer-list-container')
       };
-      var lol = new App.Game.Views.RacerList(new App.Game.Users([App.user]));
+      var lol = new App.Game.Views.RacerList({collection:new App.Game.Users([App.user, App.user])});
+      });
       return false;
     }
   });
@@ -46,13 +46,13 @@ $(function() {
   });
   
   App.Game.Views.RacerList = Backbone.View.extend({
-    el: 'ul',
+    tagName: 'ul',
     initialize: function() {
       this.render();
     },
-    collection: new Backbone.Collection(),
     render: function() {
       var self = this;
+      console.log(this.collection);
       this.collection.each(function(horse) {
         var view = new App.Game.Views.Racer({model: horse});
         self.$el.append(view.render().el);
@@ -63,7 +63,7 @@ $(function() {
   });
 
   App.Game.Views.Racer = Backbone.View.extend({
-    el: 'li',
+    tagName: 'li',
     render: function() {
       var template = _.template($('#racer-template').html());
       this.$el.html(template(this.model.toJSON()));
