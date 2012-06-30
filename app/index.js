@@ -118,36 +118,6 @@ app.post('/api/v1/name', function(req, res) {
   return res.json(u);
 });
 
-app.post('/api/v1/bet', function(req, res) {
-  var u;
-  u = new UserModel();
-  if (gameStarted) {
-    res.json({
-      error: 'Game Started, sorry!'
-    });
-  }
-  return u.findById(req.query.id, function(err, user) {
-    var bet;
-    if (!err) {
-      bet = req.query.bet;
-      if (bet > user.money || bet < 1) {
-        res.json({
-          error: 'Not enough money!'
-        });
-      }
-      user.horse = req.query.horse;
-      user.bet = req.query.bet;
-      user.save();
-      io.sockets.emit('new_bet', {
-        name: data.name,
-        horse: data.horse,
-        bet: data.bet
-      });
-      return res.json(user);
-    }
-  });
-});
-
 app.post('/api/v1/endgame', function(req, res) {
   return 0;
 });
@@ -156,6 +126,17 @@ app.get('/startGamePhish', function(req, res) {
   io.sockets.emit('startGame', true);
   gameStarted = true;
   return runSites(function() {
+    var diffMean, diffStd, h1, h1std, h2, h2std;
+    for (h1 in scores) {
+      for (h2 in scores) {
+        if (h1 !== h2) {
+          diffMean = scores[h1].mean - scores[h2].mean;
+          h1std = scores[h1].stdDev;
+          h2std = scores[h2].stdDev;
+          diffStd = Math.sqrt(h1std * h1std + h2std * h2std);
+        }
+      }
+    }
     return res.json(scores);
   });
 });
@@ -220,9 +201,9 @@ runSites = function(callback) {
       return standardDeviation(avg, obj, function(total) {
         scores[title] = {
           stdDev: total,
+          mean: avg,
           output: obj
         };
-        console.log(total);
         if (++i === 6) {
           return callback();
         }
@@ -239,7 +220,7 @@ app.listen(port, function() {
 });
 
 io.sockets.on("connection", function(socket) {
-  return socket.on("connection", function(data) {
+  socket.on("connection", function(data) {
     var u;
     u = new UserModel();
     return u.findById(data.id, function(err, user) {
@@ -252,6 +233,34 @@ io.sockets.on("connection", function(socket) {
         user.bet = req.query.bet;
         user.save();
         return res.json(user);
+      }
+    });
+  });
+  return socket.on('bet', function(data) {
+    var u;
+    u = mongoose.model('User');
+    if (gameStarted) {
+      socket.emit('error', {
+        error: 'Game Started, sorry!'
+      });
+    }
+    return u.findById(data.user._id, function(err, user) {
+      var bet;
+      if (!err) {
+        bet = data.bet;
+        if (bet > user.money || bet < 1) {
+          socket.emit('error', {
+            error: 'Not enough money!'
+          });
+        }
+        user.horse = data.horse.url;
+        user.bet = data.bet;
+        user.save();
+        return io.sockets.emit('new_bet', {
+          name: data.user.name,
+          horse: data.horse,
+          bet: data.bet
+        });
       }
     });
   });
