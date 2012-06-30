@@ -4,6 +4,7 @@ html {
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
+  font-family: Helvetica;
 }
 
 #start-box {
@@ -14,5 +15,7 @@ html {
   top: 50%;
   margin: -200px 0px 0px -350px;
   text-align: center;
-  background-color: grey;
+  background-color: rgba(0, 20, 0, .6);
+  color: #D7DFA1;
+  border: 2px solid black;
 }
