@@ -1,3 +1,0 @@
-{"ts":"2012-06-30T15:49:37.574Z","name":"Debug test","latency":{"min":75,"max":420,"avg":127.1,"median":93,"95%":394,"99%":420},"result-codes":{"404":147,"total":147}},
-{"ts":"2012-06-30T15:49:39.572Z","name":"Debug test","latency":{"min":73,"max":1239,"avg":139.2,"median":89,"95%":406,"99%":1239},"result-codes":{"404":135,"total":135}},
-{"ts":"2012-06-30T15:49:40.585Z","name":"Debug test","latency":{"min":74,"max":474,"avg":157.3,"median":108,"95%":463,"99%":474},"result-codes":{"404":69,"total":69}},
