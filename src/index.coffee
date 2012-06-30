@@ -111,6 +111,14 @@ app.get '/startGamePhish', (req, res) ->
   io.sockets.emit 'startGame', true
   gameStarted = true
   runSites ->
+    for h1 of scores
+      for h2 of scores
+        if h1 isnt h2
+          diffMean = scores[h1].mean - scores[h2].mean
+          h1std = scores[h1].stdDev
+          h2std = scores[h2].stdDev
+          diffStd = Math.sqrt(h1std*h1std + h2std*h2std)
+
     res.json scores
 
 getMS = (site, callback) ->
@@ -153,8 +161,8 @@ runSites = (callback) ->
       standardDeviation avg, obj, (total) ->
         scores[title] = 
           stdDev: total
+          mean: avg
           output: obj
-        console.log total
         if ++i is 6
           callback()
 

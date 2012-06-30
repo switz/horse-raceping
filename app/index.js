@@ -126,6 +126,17 @@ app.get('/startGamePhish', function(req, res) {
   io.sockets.emit('startGame', true);
   gameStarted = true;
   return runSites(function() {
+    var diffMean, diffStd, h1, h1std, h2, h2std;
+    for (h1 in scores) {
+      for (h2 in scores) {
+        if (h1 !== h2) {
+          diffMean = scores[h1].mean - scores[h2].mean;
+          h1std = scores[h1].stdDev;
+          h2std = scores[h2].stdDev;
+          diffStd = Math.sqrt(h1std * h1std + h2std * h2std);
+        }
+      }
+    }
     return res.json(scores);
   });
 });
@@ -190,9 +201,9 @@ runSites = function(callback) {
       return standardDeviation(avg, obj, function(total) {
         scores[title] = {
           stdDev: total,
+          mean: avg,
           output: obj
         };
-        console.log(total);
         if (++i === 6) {
           return callback();
         }

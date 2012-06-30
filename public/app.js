@@ -33,6 +33,7 @@ $(function() {
             $racerList : $('#racer-list-container')
           , $betsPanel : $('#bets-panel-container')
           , $horseInfoList : $('#horse-info-list-container')
+          , $userList : $('user-list-container')
         };
         $.get('/api/v1/horses', function(data) {
           // TODO do we want to put these on App?
@@ -41,6 +42,8 @@ $(function() {
           var lol = new App.Game.Views.RacerList({collection:horses});
           var lol2 = new App.Game.Views.HorseInfoList({collection:horses});
           var lol3 = new App.Game.Views.BetsPanel();
+          App.users = new App.Game.Views.UsersPanel(new Backbone.Collection());
+
         });
       });
       return false;
@@ -133,7 +136,30 @@ $(function() {
   });
 
   App.Game.Views.UsersPanel = Backbone.View.extend({
+    tagName: 'div',
+    collection: new App.Game.Users(),
+    initialize: function() {
+      this.render();
+    },
+    render: function() {
+      var self = this;
+      this.collection.each(function(user) {
+        var view = new App.Game.Views.UserItem({model: user});
+        self.$el.append(view.render().el);
+      });
+      App.layout.$userList.empty().html(this.el);
+      return this;
+    }
   });
+
+  App.Game.Views.UserItem = Backbone.View.extend({
+    tagName: 'div',
+    render: function() {
+      var template = _.template($('#user-item-template').html());
+      this.$el.html(template(this.model.toJSON()));
+      return this;
+    }
+  })
 
   App.Game.Views.HorseInfoItem = Backbone.View.extend({
     tagName: 'div',
@@ -179,7 +205,7 @@ $(function() {
       gameStarted = true;
   });
   socket.on('new_bet', function (data) {
-    // add to user's list of bets
-    console.log(data);
+    App.users.collection.add(data);
+    App.users.render();
   })
 });
