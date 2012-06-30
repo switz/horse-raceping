@@ -4,21 +4,15 @@ assets = require 'connect-assets'
 http = require 'http'
 fs = require 'fs'
 mongoose = require 'mongoose'
+scores = {}
 
 sites = 
-  'Google' : 'http://google.com'
-  'Yahoo' : 'http://yahoo.com'
-  'Tumblr' : 'http://tumblr.com'
-  'Facebook' : 'http://facebook.com'
-  'Sendgrid' : 'http://sendgrid.com'
-  'Mashery' : 'http://mashery.com'
-  'Meetup' : 'http://meetup.com'
-  'Node.js' : 'http://nodejs.org'
-  'jQuery' : 'http://jquery.com'
-  'NY Times' : 'http://nytimes.com'
-  'Underscore' : 'http://underscorejs.com'
-  'LoDash' : 'http://lodash.com'
-  'Github' : 'http://github.com' 
+  'Yahoo' : 'meetup.com'
+  'Tumblr' : 'github.com'
+  'Meetup' : 'jquery.com'
+  'NY Times' : 'nytimes.com'
+  'Underscore' : 'underscorejs.org'
+  'LoDash' : 'lodash.com'
 
 mongoose.connect 'mongodb://localhost/horse'
 
@@ -31,7 +25,7 @@ User = new mongoose.Schema
     default: 'http://'
   bet:
     type: Number
-    default: 1
+    default: -1
   money:
     type: Number
     default: 100
@@ -80,7 +74,7 @@ app.post '/api/v1/bet', (req, res) ->
   u.findById req.query.id, (err, user) ->
     unless err
       bet = req.query.bet
-      if bet > user.money
+      if bet > user.money || bet < 1
         res.json
           error: 'Not enough money!'
       user.horse = req.query.horse
@@ -92,15 +86,19 @@ app.post '/api/v1/bet', (req, res) ->
         bet: data.bet
       res.json user
 
-app.post 'api/v1/endgame', (req, res) ->
+app.post '/api/v1/endgame', (req, res) ->
+  0
 
 # Admin shit
 
-app.post '/startGame', (req, res) ->
-  0
+app.get '/startGamePhish', (req, res) ->
+  io.sockets.emit 'startGame', true
+  runSites ->
+    res.json scores
 
 getMS = (site, callback) ->
   output = []
+  ms = 0
   start = 100
   i = start
   while --i > 0
@@ -111,14 +109,25 @@ getMS = (site, callback) ->
       agent: false
     , (res) =>
       length = new Date() - start
+      ms += length
       output.push
         message: "Request took: " + length + "ms (#{site})"
         time: length
         site: site
         status: res.statusCode
       if output.length is 99
-        callback output
+        callback site, ms/100
 
+
+runSites = (callback) ->
+  scores = {}
+  i = 0
+  for s of sites
+    current = sites[s]
+    getMS current, (title, ms) ->
+      scores[title] = ms
+      if ++i is 6
+        callback()
 
 # Define Port
 port = process.env.PORT or process.env.VMC_APP_PORT or 4000
