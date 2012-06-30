@@ -1,5 +1,5 @@
 html { 
-  background: url(../images/bg.jpg) no-repeat center center fixed; 
+  background: url(../images/bg.jpg) no-repeat top left fixed; 
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -8,7 +8,7 @@ html {
 }
 
 #start-box {
-  position: absolute;
+  position: fixed;
   width: 700px;
   height: 400px;
   left: 50%;
