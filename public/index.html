@@ -19,8 +19,10 @@
     <script src="app.js"></script>
   </head>
   <body>
+    <div class="row-fluid">
     <!-- application container -->
-    <div id="main">
+      <div id="main" class="span12">
+      </div>
     </div>
     <!-- templates -->
     <script type="text/template" id="start-template">
@@ -32,18 +34,22 @@
         </form>
       </div>
     </script>
+    <script type="text/template" id="horse-info-item-template">
+      <%= name %>
+    </script>
     <script type="text/template" id="racer-template">
       <%= name %>
     </script>
     <script type="text/template" id="bet-set-template">
       <p>How much do you want to bet on <%= horse.name %>?</p>
-      <form id="bet-form">
-        <p><input type="range" id="slider" /></p>
-        <input type="submit" id="confirm" value="Confirm Bet" />
-      </form>
+      <p><input type="range" id="slider" /></p>
+      <input type="button" id="confirm" value="Confirm Bet" />
+    </script>
+    <script type="text/template" id="racer-list-template">
+      <div class="span2"><%= name %></div>
     </script>
     <script type="text/template" id="layout-template">
-      <div id="racer-list-container"></div>
+      <div id="racer-list-container" class="span12"></div>
       <div id="track-container"></div>
       <div id="userpanel-container">
         <div id="horse-info-list-container"></div>

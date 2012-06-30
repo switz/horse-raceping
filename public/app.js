@@ -1,11 +1,11 @@
 $(function() {
-  var App = {
+  var App = _.extend({
       Login : {Views:{}}
     , Game : {
         Views:{}
       }
     , user : null
-  };
+  }, Backbone.Events);
   
   App.Login.Views.LoginForm = Backbone.View.extend({
     el: '#main',
@@ -24,15 +24,22 @@ $(function() {
       var name = $('#name').val();
       $.post('/api/v1/name?name='+name, function(data) {
         App.user = new App.Game.User(data);
-        console.log(App.user);
-      // setup layout for game;
-      var layout = _.template($('#layout-template').html());
-      $('#main').empty().html(layout({}));
-      App.layout = {
-          $RacerListContainer : $('#racer-list-container')
-        , $BetsPanelContainer : $('#bets-panel-container')
-      };
-      var lol = new App.Game.Views.RacerList({collection:new App.Game.Users([App.user, App.user])});
+        // setup layout for game;
+        var layout = _.template($('#layout-template').html());
+        $('#main').empty().html(layout({}));
+        App.layout = {
+            $racerList : $('#racer-list-container')
+          , $betsPanel : $('#bets-panel-container')
+          , $horseInfoList : $('#horse-info-list-container')
+        };
+        $.get('/api/v1/horses', function(data) {
+          // TODO do we want to put these on App?
+
+          var horses = new Backbone.Collection(data);
+          var lol = new App.Game.Views.RacerList({collection:horses});
+          var lol2 = new App.Game.Views.HorseInfoList({collection:horses});
+          var lol3 = new App.Game.Views.BetsPanel();
+        });
       });
       return false;
     }
@@ -47,24 +54,25 @@ $(function() {
   });
   
   App.Game.Views.RacerList = Backbone.View.extend({
-    tagName: 'ul',
+    tagName: 'div',
+    url: '/api/v1/horses',
     initialize: function() {
       this.render();
     },
     render: function() {
       var self = this;
-      console.log(this.collection);
       this.collection.each(function(horse) {
         var view = new App.Game.Views.Racer({model: horse});
         self.$el.append(view.render().el);
       });
-      App.layout.$RacerListContainer.empty().html(this.el);
+      App.layout.$racerList.empty().html(this.el);
       return this;
     }
   });
 
   App.Game.Views.Racer = Backbone.View.extend({
-    tagName: 'li',
+    tagName: 'div',
+    className: 'span2',
     render: function() {
       var template = _.template($('#racer-template').html());
       this.$el.html(template(this.model.toJSON()));
@@ -79,10 +87,17 @@ $(function() {
     selected: null,
     betted: false,
     events: {
-      'click #confirm' : 'placeBet'
+      'click #confirm': 'placeBet'
     },
     initialize: function() {
       this.render();
+      var self = this;
+      App.on('horseInfoItem:select', function(horse) {
+        if (self.betted === false) {
+          self.selected = horse;
+          self.render();
+        }
+      });
     },
     render: function() {
       if (!this.betted) {
@@ -91,26 +106,57 @@ $(function() {
         } else {
           var template = _.template($('#bet-set-template').html());
           // TODO convert odds to number, pass multiplier to template
-          this.$el.html(template({oddsMult:1, horse:this.selected}));
+          this.$el.html(template({oddsMult:1, horse:this.selected.toJSON()}));
         }
       } else {
-        this.$el.html('You have $' + App.user.get('bet') + ' bet on xxxx');
+        this.$el.html('You have $' + App.user.get('bet') + ' bet on ' + this.selected.get('name') + '.');
       }
-      App.layout.$betsPanelContainer.empty().html(this.ell);
+      App.layout.$betsPanel.empty().html(this.el);
+      this.delegateEvents();
     },
     placeBet: function() {
+      console.log('hi');
       this.betted = true;
       App.user.set('bet', $('#slider').val());
       this.render();
+      return false;
     }
   });
 
   App.Game.Views.UsersPanel = Backbone.View.extend({
   });
 
-  App.Game.Views.HorseInfoList = Backbone.View.extend({
+  App.Game.Views.HorseInfoItem = Backbone.View.extend({
+    tagName: 'div',
+    events: {
+      click : 'select'
+    },
+    select: function() {
+      App.trigger('horseInfoItem:select', this.model);
+    },
+    render: function() {
+      var template = _.template($('#horse-info-item-template').html());
+      this.$el.html(template(this.model.toJSON()));
+      return this;
+    }
   });
 
+  App.Game.Views.HorseInfoList = Backbone.View.extend({
+    tagName: 'div',
+    url: '/api/v1/horses',
+    initialize: function() {
+      this.render();
+    },
+    render: function() {
+      var self = this;
+      this.collection.each(function(horse) {
+        var view = new App.Game.Views.HorseInfoItem({model: horse});
+        self.$el.append(view.render().el);
+      });
+      App.layout.$horseInfoList.empty().html(this.el);
+      return this;
+    }
+  });
 
   var Login = new App.Login.Views.LoginForm();
 });
