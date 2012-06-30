@@ -19,9 +19,10 @@ $(function() {
       return this;
     },
     enterGame: function() {
+      var name = $('#name').val();
       $.ajax('/api/v1/name', {
           type: 'POST' 
-        , data: {name: $('#name').val()}
+        , data: {name: name}
         // TODO make async
         , async: false
         , success: function(data, textStatus) {
