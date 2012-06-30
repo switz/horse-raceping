@@ -2,11 +2,13 @@ $(function() {
   var App = {
       Login : {}
     , Game : {}
+    , user : null
   };
   
   App.Login.LoginView = Backbone.View.extend({
+    el: '#main',
     events: {
-      'click #start' : 'startGame'
+      'click #start' : 'enterGame'
     },
     initialize: function() {
       this.render();
@@ -16,8 +18,19 @@ $(function() {
       $('#main').empty().html(template({}));
       return this;
     },
-    startGame: function() {
-      console.log('started');
+    enterGame: function() {
+      $.ajax('/api/v1/name', {
+          type: 'POST' 
+        , data: {name: $('#name').val()}
+        // TODO make async
+        , async: false
+        , success: function(data, textStatus) {
+            if (textStatus === 'success') {
+              App.user = data;
+            }
+          }
+      });
+      console.log(App.user);
     }
   });
 
