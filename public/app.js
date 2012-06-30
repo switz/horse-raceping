@@ -1,4 +1,5 @@
 $(function() {
+  var socket = io.connect('http://localhost');
   var App = _.extend({
       Login : {Views:{}}
     , Game : {
@@ -116,9 +117,16 @@ $(function() {
       this.delegateEvents();
     },
     placeBet: function() {
-      console.log('hi');
       this.betted = true;
-      App.user.set('bet', $('#slider').val());
+      App.bet = true;
+      var bet = $('#slider').val();
+      var horse = this.selected.toJSON();
+      App.user.set('bet', bet);
+      socket.emit('bet', {
+        user: App.user,
+        bet: bet,
+        horse: horse
+      });
       this.render();
       return false;
     }
@@ -129,11 +137,16 @@ $(function() {
 
   App.Game.Views.HorseInfoItem = Backbone.View.extend({
     tagName: 'div',
+    className: 'bet',
     events: {
       click : 'select'
     },
     select: function() {
       App.trigger('horseInfoItem:select', this.model);
+      if (App.bet)
+        return;
+      $('.selected').removeClass('selected');
+      this.$el.addClass('selected');
     },
     render: function() {
       var template = _.template($('#horse-info-item-template').html());
@@ -161,9 +174,12 @@ $(function() {
 
   var Login = new App.Login.Views.LoginForm();
 
-  var socket = io.connect('http://localhost');
   socket.on('startGame', function (startGame) {
     if (startGame)
       gameStarted = true;
   });
+  socket.on('new_bet', function (data) {
+    // add to user's list of bets
+    console.log(data);
+  })
 });

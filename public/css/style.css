@@ -63,3 +63,14 @@ body > div.row-fluid {
   list-style: none;
   padding-top: 10px;
 }
+
+#main #userpanel-container .bet {
+  height: 28px;
+  font-size: 28px;
+  padding: 5px;
+}
+
+#main #userpanel-container .bet:hover, #main #userpanel-container .bet.selected {
+  background: grey;
+  color: white;
+}

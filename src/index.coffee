@@ -100,26 +100,7 @@ app.post '/api/v1/name', (req, res) ->
   u.name = req.query.name
   u.save()
   res.json u
-
-app.post '/api/v1/bet', (req, res) ->
-  u = new UserModel()
-  if gameStarted
-    res.json
-      error: 'Game Started, sorry!'
-  u.findById req.query.id, (err, user) ->
-    unless err
-      bet = req.query.bet
-      if bet > user.money || bet < 1
-        res.json
-          error: 'Not enough money!'
-      user.horse = req.query.horse
-      user.bet = req.query.bet
-      user.save()
-      io.sockets.emit 'new_bet',
-        name: data.name
-        horse: data.horse
-        bet: data.bet
-      res.json user
+  
 
 app.post '/api/v1/endgame', (req, res) ->
   0
@@ -197,3 +178,22 @@ io.sockets.on "connection", (socket) ->
         user.bet = req.query.bet
         user.save()
         res.json user
+
+  socket.on 'bet', (data) ->
+    u = mongoose.model('User')
+    if gameStarted
+      socket.emit 'error',
+        error: 'Game Started, sorry!'
+    u.findById data.user._id, (err, user) ->
+      unless err
+        bet = data.bet
+        if bet > user.money || bet < 1
+          socket.emit 'error',
+            error: 'Not enough money!'
+        user.horse = data.horse.url
+        user.bet = data.bet
+        user.save()
+        io.sockets.emit 'new_bet',
+          name: data.user.name
+          horse: data.horse
+          bet: data.bet
