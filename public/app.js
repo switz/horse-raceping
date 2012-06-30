@@ -20,6 +20,7 @@ $(function() {
     render: function() {
       var template = _.template($('#start-template').html());
       $('#main').empty().html(template({}));
+      (new Audio("sounds/horseracestart.mp3")).play();
       return this;
     },
     enterGame: function() {
