@@ -5,6 +5,7 @@ http = require 'http'
 fs = require 'fs'
 mongoose = require 'mongoose'
 scores = {}
+users = []
 gameStarted = false
 
 sites = 
@@ -108,7 +109,6 @@ app.post '/api/v1/endgame', (req, res) ->
 # Admin shit
 
 app.get '/startGamePhish', (req, res) ->
-  io.sockets.emit 'startGame', true
   gameStarted = true
   runSites ->
     for h1 of scores
@@ -119,6 +119,8 @@ app.get '/startGamePhish', (req, res) ->
           h2std = scores[h2].stdDev
           diffStd = Math.sqrt(h1std*h1std + h2std*h2std)
 
+    io.sockets.emit 'startGame',
+      scores
     res.json scores
 
 getMS = (site, callback) ->
@@ -162,7 +164,7 @@ runSites = (callback) ->
         scores[title] = 
           stdDev: total
           mean: avg
-          output: obj
+          #output: obj
         if ++i is 6
           callback()
 
@@ -201,7 +203,9 @@ io.sockets.on "connection", (socket) ->
         user.horse = data.horse.url
         user.bet = data.bet
         user.save()
-        io.sockets.emit 'new_bet',
+        users.push 
           name: data.user.name
           horse: data.horse
           bet: data.bet
+        io.sockets.emit 'new_bet',
+          users
