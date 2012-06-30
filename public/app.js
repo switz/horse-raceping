@@ -20,18 +20,10 @@ $(function() {
     },
     enterGame: function() {
       var name = $('#name').val();
-      $.ajax('/api/v1/name', {
-          type: 'POST' 
-        , data: {name: name}
-        // TODO make async
-        , async: false
-        , success: function(data, textStatus) {
-            if (textStatus === 'success') {
-              App.user = data;
-            }
-          }
-      });
-      console.log(App.user);
+      $.post('/api/v1/name?name='+name, function(data) {
+        App.user = data;
+        console.log(App.user);
+      })
     }
   });
 

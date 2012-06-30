@@ -55,7 +55,6 @@ app.post '/api/v1/name', (req, res) ->
   u = new UserModel()
   u.name = req.query.name
   u.save()
-  console.log u
   res.json u
 
 app.post '/api/v1/bet', (req, res) ->
@@ -114,5 +113,15 @@ io.sockets.on "connection", (socket) ->
   socket.emit "news",
     hello: "world"
 
-  socket.on "my other event", (data) ->
-    console.log data
+  socket.on "connection", (data) ->
+    u = new UserModel()
+    u.findById data.id, (err, user) ->
+      unless err
+        sid = 
+        if bet > user.money
+          res.json
+            error: 'Not enough money!'
+        user.horse = req.query.horse
+        user.bet = req.query.bet
+        user.save()
+        res.json user

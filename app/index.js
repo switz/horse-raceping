@@ -63,7 +63,6 @@ app.post('/api/v1/name', function(req, res) {
   u = new UserModel();
   u.name = req.query.name;
   u.save();
-  console.log(u);
   return res.json(u);
 });
 
@@ -135,7 +134,20 @@ io.sockets.on("connection", function(socket) {
   socket.emit("news", {
     hello: "world"
   });
-  return socket.on("my other event", function(data) {
-    return console.log(data);
+  return socket.on("connection", function(data) {
+    var u;
+    u = new UserModel();
+    return u.findById(data.id, function(err, user) {
+      var sid;
+      if (!err) {
+        sid = bet > user.money ? res.json({
+          error: 'Not enough money!'
+        }) : void 0;
+        user.horse = req.query.horse;
+        user.bet = req.query.bet;
+        user.save();
+        return res.json(user);
+      }
+    });
   });
 });
