@@ -40,7 +40,8 @@ getMS = function(site, callback) {
     return callback({
       message: "Request took: " + length + ("ms (" + site + ")"),
       time: length,
-      site: site
+      site: site,
+      status: res.statusCode
     });
   });
 };

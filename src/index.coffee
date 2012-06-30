@@ -9,11 +9,11 @@ app.use assets()
 # Set View Engine
 app.set 'view engine', 'jade'
 
-###########################
-##                        #
-## The actual fucking app #
-##                        #
-###########################
+############################
+##                        ##
+## The actual fucking app ##
+##                        ##
+############################
 
 
 # Get root_path return index view
@@ -36,6 +36,7 @@ getMS = (site, callback) ->
       message: "Request took: " + length + "ms (#{site})"
       time: length
       site: site
+      status: res.statusCode
 
 
 
