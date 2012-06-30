@@ -10,7 +10,7 @@ $(function() {
   App.Login.Views.LoginForm = Backbone.View.extend({
     el: '#main',
     events: {
-      'click #start' : 'enterGame'
+      'submit #start-form' : 'enterGame'
     },
     initialize: function() {
       this.render();
@@ -26,6 +26,7 @@ $(function() {
         App.user = data;
         console.log(App.user);
       })
+      return false;
     }
   });
 
