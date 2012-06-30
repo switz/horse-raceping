@@ -23,9 +23,16 @@ $(function() {
     enterGame: function() {
       var name = $('#name').val();
       $.post('/api/v1/name?name='+name, function(data) {
-        App.user = data;
+        App.user = new App.Game.User(data);
         console.log(App.user);
-      })
+      });
+      // setup layout for game;
+      var layout = _.template($('#layout-template').html());
+      $('main').empty().html(layout({}));
+      App.layout = {
+        $RacerListContainer : $('#racer-list-container')
+      };
+      var lol = new App.Game.Views.RacerList(new App.Game.Users([App.user]));
       return false;
     }
   });
@@ -37,19 +44,30 @@ $(function() {
   App.Game.Users = Backbone.Collection.extend({
     model: App.Game.User
   });
-
+  
   App.Game.Views.RacerList = Backbone.View.extend({
     el: 'ul',
     initialize: function() {
-      this.collection = this.options.collection;
+      this.render();
     },
     render: function() {
+      var self = this;
+      this.collection.each(function(horse) {
+        var view = new App.Game.Views.Racer({model: horse});
+        self.$el.append(view.render().el);
+      });
+      App.layout.$RacerListContainer.empty().html(this.el);
+      return this;
     }
   });
 
   App.Game.Views.Racer = Backbone.View.extend({
-    el: 'li'
-    
+    el: 'li',
+    render: function() {
+      var template = _.template($('#racer-template').html());
+      this.$el.html(template(this.model.toJSON()));
+      return this;
+    }
   });
 
   App.Game.Views.Track = Backbone.View.extend({
