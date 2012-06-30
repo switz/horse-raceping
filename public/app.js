@@ -50,6 +50,7 @@ $(function() {
     initialize: function() {
       this.render();
     },
+    collection: new Backbone.Collection(),
     render: function() {
       var self = this;
       this.collection.each(function(horse) {
