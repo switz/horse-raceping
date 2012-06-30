@@ -4,6 +4,7 @@ assets = require 'connect-assets'
 http = require 'http'
 fs = require 'fs'
 mongoose = require 'mongoose'
+io = require('socket.io').listen(80)
 
 mongoose.connect 'mongodb://localhost/horse'
 
@@ -51,9 +52,40 @@ app.get '/site/:site', (req, res) ->
     res.send json
 
 app.post '/api/v1/name', (req, res) ->
-  u = new UserModel
-    name: req.params.name
+  u = new UserModel()
+  u.name = req.query.name
   u.save()
+  res.json u
+
+app.post '/api/v1/bet', (req, res) ->
+  u = new UserModel()
+  u.findById req.query.id, (err, user) ->
+    unless err
+      bet = req.query.bet
+      if bet > user.money
+        res.json
+          error: 'Not enough money!'
+      user.horse = req.query.horse
+      user.bet = req.query.bet
+      user.save()
+      res.json user
+
+app.post 'api/v1/endgame', (req, res) ->
+
+
+# Admin shit
+
+app.post '/startGame', (req, res) ->
+  0
+
+
+io.sockets.on "connection", (socket) ->
+  socket.emit "news",
+    hello: "world"
+
+  socket.on "my other event", (data) ->
+    console.log data
+
 
 getMS = (site, callback) ->
   output = []

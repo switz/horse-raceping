@@ -1,5 +1,5 @@
 {
-    "name": "express-coffee"
+    "name": "horseraceping"
   , "version": "1.4.1"
   , "private": true
   , "dependencies": {
@@ -9,6 +9,8 @@
     , "stylus": "0.27.0"
     , "nib": "0.4.1"
     , "markdown": "0.3.1"
+    , "mongoose": "*"
+    , "socket.io": "*"
   }, "scripts": {
     "start": "node server.js",
     "test": "mocha --require should --compilers coffee:coffee-script --colors"
@@ -21,5 +23,6 @@
   }, 
   "engines": {
     "node": "~0.8.x"
-  }
+  },
+  "subdomain" : "horseraceping"
 }
