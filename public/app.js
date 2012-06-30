@@ -145,11 +145,9 @@ $(function() {
   App.Game.Views.UsersPanel = Backbone.View.extend({
     tagName: 'div',
     collection: new App.Game.Users(),
-    initialize: function() {
-      this.render();
-    },
     render: function() {
       var self = this;
+      this.$el.html('');
       this.collection.each(function(user) {
         var view = new App.Game.Views.UserItem({model: user});
         self.$el.append(view.render().el);
@@ -212,7 +210,7 @@ $(function() {
       gameStarted = true;
   });
   socket.on('new_bet', function (data) {
-    App.users.collection.add(data);
+    App.users.collection.reset(data);
     App.users.render();
   })
 });

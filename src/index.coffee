@@ -5,6 +5,7 @@ http = require 'http'
 fs = require 'fs'
 mongoose = require 'mongoose'
 scores = {}
+users = []
 gameStarted = false
 
 sites = 
@@ -201,7 +202,9 @@ io.sockets.on "connection", (socket) ->
         user.horse = data.horse.url
         user.bet = data.bet
         user.save()
-        io.sockets.emit 'new_bet',
+        users.push 
           name: data.user.name
           horse: data.horse
           bet: data.bet
+        io.sockets.emit 'new_bet',
+          users
