@@ -82,6 +82,13 @@ $(function() {
   });
 
   App.Game.Views.Track = Backbone.View.extend({
+    initialize: function() {
+      for (var i = 0; i < 6; i++) {
+        var wall = document.createElement('div');
+        var horse = document.createElement('div');
+        this.$el.append(wall);
+      }
+    }
   });
 
   App.Game.Views.BetsPanel = Backbone.View.extend({
