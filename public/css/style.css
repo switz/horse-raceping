@@ -4,5 +4,6 @@
   height: 400px;
   left: 50%;
   top: 50%;
-  margin: 0 auto;
+  margin: -200px 0px 0px 0px;
+  align: center;
 }
