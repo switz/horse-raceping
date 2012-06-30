@@ -38,8 +38,6 @@ UserModel = mongoose.model('User', User);
 
 app = express.createServer();
 
-io = require('socket.io').listen(app);
-
 app.use(assets());
 
 app.use(express["static"](__dirname + '/../public'));
@@ -65,6 +63,7 @@ app.post('/api/v1/name', function(req, res) {
   u = new UserModel();
   u.name = req.query.name;
   u.save();
+  console.log(u);
   return res.json(u);
 });
 
@@ -92,15 +91,6 @@ app.post('api/v1/endgame', function(req, res) {});
 
 app.post('/startGame', function(req, res) {
   return 0;
-});
-
-io.sockets.on("connection", function(socket) {
-  socket.emit("news", {
-    hello: "world"
-  });
-  return socket.on("my other event", function(data) {
-    return console.log(data);
-  });
 });
 
 getMS = function(site, callback) {
@@ -137,4 +127,15 @@ port = process.env.PORT || process.env.VMC_APP_PORT || 4000;
 
 app.listen(port, function() {
   return console.log("Listening on " + port);
+});
+
+io = require('socket.io').listen(app);
+
+io.sockets.on("connection", function(socket) {
+  socket.emit("news", {
+    hello: "world"
+  });
+  return socket.on("my other event", function(data) {
+    return console.log(data);
+  });
 });

@@ -24,7 +24,6 @@ User = new mongoose.Schema
 UserModel = mongoose.model 'User', User
 
 app = express.createServer()
-io = require('socket.io').listen app
 
 # Add Connect Assets
 app.use assets()
@@ -56,6 +55,7 @@ app.post '/api/v1/name', (req, res) ->
   u = new UserModel()
   u.name = req.query.name
   u.save()
+  console.log u
   res.json u
 
 app.post '/api/v1/bet', (req, res) ->
@@ -78,15 +78,6 @@ app.post 'api/v1/endgame', (req, res) ->
 
 app.post '/startGame', (req, res) ->
   0
-
-
-io.sockets.on "connection", (socket) ->
-  socket.emit "news",
-    hello: "world"
-
-  socket.on "my other event", (data) ->
-    console.log data
-
 
 getMS = (site, callback) ->
   output = []
@@ -115,3 +106,13 @@ port = process.env.PORT or process.env.VMC_APP_PORT or 4000
 
 # Start Server
 app.listen port, -> console.log "Listening on #{port}"
+
+io = require('socket.io').listen app
+
+
+io.sockets.on "connection", (socket) ->
+  socket.emit "news",
+    hello: "world"
+
+  socket.on "my other event", (data) ->
+    console.log data
