@@ -3,6 +3,25 @@ stylus = require 'stylus'
 assets = require 'connect-assets'
 http = require 'http'
 fs = require 'fs'
+mongoose = require 'mongoose'
+
+mongoose.connect 'mongodb://localhost/horse'
+
+User = new mongoose.Schema
+  name: 
+    type: String
+    default: 'noob'
+  horse:
+    type: String
+    default: 'http://'
+  bet:
+    type: Number
+    default: 1
+  money:
+    type: Number
+    default: 100
+
+UserModel = mongoose.model 'User', User
 
 app = express()
 # Add Connect Assets
@@ -16,23 +35,6 @@ app.set 'view engine', 'jade'
 ## The actual fucking app ##
 ##                        ##
 ############################
-
-pages =
-  main:
-    url: "/"
-    weight: 3
-
-  search:
-    url: "/search?q=test"
-    weight: 1
-
-  notFound:
-    url: "/notfound"
-    weight: 1
-
-engines =
-  google: "https://www.google.com"
-  bing: "http://www.bing.com"
 
 
 # Get root_path return index view
@@ -48,6 +50,11 @@ app.get '/site/:site', (req, res) ->
   getMS req.params.site, (json) ->
     res.send json
 
+app.post '/api/v1/name', (req, res) ->
+  u = new UserModel
+    name: req.params.name
+  u.save()
+
 getMS = (site, callback) ->
   output = []
   start = 100
@@ -57,6 +64,7 @@ getMS = (site, callback) ->
     http.get
       host: site
       port: 80
+      agent: false
     , (res) =>
       length = new Date() - start
       output.push
