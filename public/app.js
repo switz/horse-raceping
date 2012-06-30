@@ -43,7 +43,7 @@ $(function() {
           var lol2 = new App.Game.Views.HorseInfoList({collection:horses});
           var lol3 = new App.Game.Views.BetsPanel();
           App.users = new App.Game.Views.UsersPanel(new Backbone.Collection());
-
+          App.track = new App.Game.Views.Track();
         });
       });
       return false;
@@ -90,8 +90,12 @@ $(function() {
       for (var i = 0; i < 6; i++) {
         var wall = document.createElement('div');
         var horse = document.createElement('div');
+        $(wall).addClass('wall').attr('id', 'wall' + i);
+        $(horse).addClass('horse').attr('id', 'horse' + i);
+        this.$el.append(horse);
         this.$el.append(wall);
       }
+      $('#track-container').empty().html(this.el);
     }
   });
 
