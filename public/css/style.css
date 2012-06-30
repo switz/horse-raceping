@@ -19,3 +19,15 @@ html {
   color: #D7DFA1;
   border: 2px solid black;
 }
+
+#start-box h1 {
+  padding-top: 20px;
+}
+
+#start-box form {
+  margin-top: 50px;
+}
+
+#start-box form input {
+  margin-top: 15px;
+}
