@@ -1,11 +1,13 @@
 $(function() {
   var App = {
-      Login : {}
-    , Game : {}
+      Login : {Views:{}}
+    , Game : {
+        Views:{}
+      }
     , user : null
   };
   
-  App.Login.LoginView = Backbone.View.extend({
+  App.Login.Views.LoginForm = Backbone.View.extend({
     el: '#main',
     events: {
       'click #start' : 'enterGame'
@@ -35,5 +37,32 @@ $(function() {
     model: App.Game.User
   });
 
-  var Login = new App.Login.LoginView();
+  App.Game.Views.RacerList = Backbone.View.extend({
+    el: 'ul',
+    initialize: function() {
+      this.collection = this.options.collection;
+    },
+    render: function() {
+    }
+  });
+
+  App.Game.Views.Racer = Backbone.View.extend({
+    el: 'li'
+    
+  });
+
+  App.Game.Views.Track = Backbone.View.extend({
+  });
+
+  App.Game.Views.BetsPanel = Backbone.View.extend({
+  });
+
+  App.Game.Views.UsersPanel = Backbone.View.extend({
+  });
+
+  App.Game.Views.HorseInfoList = Backbone.View.extend({
+  });
+
+
+  var Login = new App.Login.Views.LoginForm();
 });
