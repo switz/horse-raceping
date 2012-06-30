@@ -208,6 +208,7 @@ $(function() {
   socket.on('startGame', function (startGame) {
     if (startGame)
       gameStarted = true;
+      // access startGame object
   });
   socket.on('new_bet', function (data) {
     App.users.collection.reset(data);

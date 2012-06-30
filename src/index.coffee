@@ -109,7 +109,6 @@ app.post '/api/v1/endgame', (req, res) ->
 # Admin shit
 
 app.get '/startGamePhish', (req, res) ->
-  io.sockets.emit 'startGame', true
   gameStarted = true
   runSites ->
     for h1 of scores
@@ -120,6 +119,8 @@ app.get '/startGamePhish', (req, res) ->
           h2std = scores[h2].stdDev
           diffStd = Math.sqrt(h1std*h1std + h2std*h2std)
 
+    io.sockets.emit 'startGame',
+      scores
     res.json scores
 
 getMS = (site, callback) ->
@@ -163,7 +164,7 @@ runSites = (callback) ->
         scores[title] = 
           stdDev: total
           mean: avg
-          output: obj
+          #output: obj
         if ++i is 6
           callback()
 

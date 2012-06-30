@@ -125,7 +125,6 @@ app.post('/api/v1/endgame', function(req, res) {
 });
 
 app.get('/startGamePhish', function(req, res) {
-  io.sockets.emit('startGame', true);
   gameStarted = true;
   return runSites(function() {
     var diffMean, diffStd, h1, h1std, h2, h2std;
@@ -139,6 +138,7 @@ app.get('/startGamePhish', function(req, res) {
         }
       }
     }
+    io.sockets.emit('startGame', scores);
     return res.json(scores);
   });
 });
@@ -203,8 +203,7 @@ runSites = function(callback) {
       return standardDeviation(avg, obj, function(total) {
         scores[title] = {
           stdDev: total,
-          mean: avg,
-          output: obj
+          mean: avg
         };
         if (++i === 6) {
           return callback();
