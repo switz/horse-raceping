@@ -5,6 +5,21 @@ http = require 'http'
 fs = require 'fs'
 mongoose = require 'mongoose'
 
+sites = 
+  'Google' : 'http://google.com'
+  'Yahoo' : 'http://yahoo.com'
+  'Tumblr' : 'http://tumblr.com'
+  'Facebook' : 'http://facebook.com'
+  'Sendgrid' : 'http://sendgrid.com'
+  'Mashery' : 'http://mashery.com'
+  'Meetup' : 'http://meetup.com'
+  'Node.js' : 'http://nodejs.org'
+  'jQuery' : 'http://jquery.com'
+  'NY Times' : 'http://nytimes.com'
+  'Underscore' : 'http://underscorejs.com'
+  'LoDash' : 'http://lodash.com'
+  'Github' : 'http://github.com' 
+
 mongoose.connect 'mongodb://localhost/horse'
 
 User = new mongoose.Schema
@@ -31,6 +46,8 @@ app.use express.static(__dirname + '/../public')
 # Set View Engine
 #app.set 'view engine', 'jade'
 
+io = require('socket.io').listen app
+
 ############################
 ##                        ##
 ## The actual fucking app ##
@@ -46,6 +63,7 @@ app.get '/', (req, res) ->
       res.end 'Error, 500'
 
     res.end data
+  
 
 app.get '/site/:site', (req, res) ->
   getMS req.params.site, (json) ->
@@ -68,10 +86,13 @@ app.post '/api/v1/bet', (req, res) ->
       user.horse = req.query.horse
       user.bet = req.query.bet
       user.save()
+      io.sockets.emit 'new_bet',
+        name: data.name
+        horse: data.horse
+        bet: data.bet
       res.json user
 
 app.post 'api/v1/endgame', (req, res) ->
-
 
 # Admin shit
 
@@ -95,9 +116,8 @@ getMS = (site, callback) ->
         time: length
         site: site
         status: res.statusCode
-      if output.length >= 99
+      if output.length is 99
         callback output
-
 
 
 # Define Port
@@ -106,12 +126,7 @@ port = process.env.PORT or process.env.VMC_APP_PORT or 4000
 # Start Server
 app.listen port, -> console.log "Listening on #{port}"
 
-io = require('socket.io').listen app
-
-
 io.sockets.on "connection", (socket) ->
-  socket.emit "news",
-    hello: "world"
 
   socket.on "connection", (data) ->
     u = new UserModel()
