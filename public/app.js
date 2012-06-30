@@ -33,7 +33,7 @@ $(function() {
             $racerList : $('#racer-list-container')
           , $betsPanel : $('#bets-panel-container')
           , $horseInfoList : $('#horse-info-list-container')
-          , $userList : $('user-list-container')
+          , $userList : $('#user-list-container')
         };
         $.get('/api/v1/horses', function(data) {
           // TODO do we want to put these on App?
