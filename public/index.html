@@ -35,11 +35,21 @@
     <script type="text/template" id="racer-template">
       <%= name %>
     </script>
+    <script type="text/template" id="bet-set-template">
+      <p>How much do you want to bet on <%= horse.name %>?</p>
+      <form id="bet-form">
+        <p><input type="range" id="slider" /></p>
+        <input type="submit" id="confirm" value="Confirm Bet" />
+      </form>
+    </script>
     <script type="text/template" id="layout-template">
       <div id="racer-list-container"></div>
       <div id="track-container"></div>
-      <div id="userpanel-container"></div>
-      <div id="horse-info-list-container"></div>
+      <div id="userpanel-container">
+        <div id="horse-info-list-container"></div>
+        <div id="bets-panel-container"></div>
+        <div id="user-list-container"></div>
+      </div>
     </script>
   </body>
 </html>

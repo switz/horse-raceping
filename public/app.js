@@ -29,7 +29,8 @@ $(function() {
       var layout = _.template($('#layout-template').html());
       $('#main').empty().html(layout({}));
       App.layout = {
-        $RacerListContainer : $('#racer-list-container')
+          $RacerListContainer : $('#racer-list-container')
+        , $BetsPanelContainer : $('#bets-panel-container')
       };
       var lol = new App.Game.Views.RacerList({collection:new App.Game.Users([App.user, App.user])});
       });
@@ -75,6 +76,33 @@ $(function() {
   });
 
   App.Game.Views.BetsPanel = Backbone.View.extend({
+    selected: null,
+    betted: false,
+    events: {
+      'click #confirm' : 'placeBet'
+    },
+    initialize: function() {
+      this.render();
+    },
+    render: function() {
+      if (!this.betted) {
+        if (this.selected === null) {
+          this.$el.html('Select a racehorse to bet on');
+        } else {
+          var template = _.template($('#bet-set-template').html());
+          // TODO convert odds to number, pass multiplier to template
+          this.$el.html(template({oddsMult:1, horse:this.selected}));
+        }
+      } else {
+        this.$el.html('You have $' + App.user.get('bet') + ' bet on xxxx');
+      }
+      App.layout.$betsPanelContainer.empty().html(this.ell);
+    },
+    placeBet: function() {
+      this.betted = true;
+      App.user.set('bet', $('#slider').val());
+      this.render();
+    }
   });
 
   App.Game.Views.UsersPanel = Backbone.View.extend({
