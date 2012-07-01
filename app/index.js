@@ -125,9 +125,11 @@ app.post('/api/v1/endgame', function(req, res) {
 });
 
 app.get('/startGamePhish', function(req, res) {
+  res.send('hello');
   gameStarted = true;
   return runSites(function() {
     var diffMean, diffStd, h1, h1std, h2, h2std;
+    res.send('hello!');
     for (h1 in scores) {
       for (h2 in scores) {
         if (h1 !== h2) {
