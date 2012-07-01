@@ -64,6 +64,10 @@ body > div.row-fluid {
   padding-top: 10px;
 }
 
+#main #userpanel-container {
+  background: white;
+}
+
 #main #userpanel-container .bet {
   height: 28px;
   font-size: 28px;

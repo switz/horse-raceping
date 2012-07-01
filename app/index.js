@@ -167,7 +167,6 @@ getMS = function(site, callback) {
         site: site,
         status: res.statusCode
       });
-      console.log(output.length, site);
       if (output.length === 9) {
         return callback(site, ms / 10, output);
       }
