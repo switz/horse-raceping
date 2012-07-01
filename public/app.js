@@ -1,5 +1,5 @@
 $(function() {
-  var socket = io.connect('http://localhost');
+  var socket = io.connect('/');
   var App = _.extend({
       Login : {Views:{}}
     , Game : {
