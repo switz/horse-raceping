@@ -1,5 +1,5 @@
 $(function() {
-  var socket = io.connect('http://localhost');
+  var socket = io.connect('/');
   var App = _.extend({
       Login : {Views:{}}
     , Game : {
@@ -23,7 +23,7 @@ $(function() {
       return this;
     },
     enterGame: function() {
-      var name = $('#name').val();
+      var name = _.escape($('#name').val());
       $.post('/api/v1/name?name='+name, function(data) {
         App.user = new App.Game.User(data);
         // setup layout for game;
@@ -221,7 +221,14 @@ $(function() {
   socket.on('startGame', function (startGame) {
     if (startGame)
       gameStarted = true;
+      (new Audio("sounds/horseracestart.mp3")).play();
       console.log(startGame);
+      var keys = _.keys(startGame);
+      _.each(keys, function(key, i) {
+        $('#horse'+i).animate({
+          left:'670px'
+        }, (startGame[key].mean * 2));
+      });
       // access startGame object
   });
   socket.on('new_bet', function (data) {
