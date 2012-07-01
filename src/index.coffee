@@ -109,10 +109,10 @@ app.post '/api/v1/endgame', (req, res) ->
 # Admin shit
 
 app.get '/startGamePhish', (req, res) ->
-  res.send 'hello'
+  res.write 'hello'
   gameStarted = true
   runSites ->
-    res.send 'hello!'
+    res.write 'hello!'
     for h1 of scores
       for h2 of scores
         if h1 isnt h2
