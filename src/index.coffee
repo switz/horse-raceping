@@ -7,6 +7,7 @@ mongoose = require 'mongoose'
 scores = {}
 users = []
 gameStarted = false
+querystring = require 'querystring'
 
 sites = 
   'Meetup' : 'meetup.com'
@@ -98,7 +99,7 @@ app.get '/api/v1/horses', (req, res) ->
 
 app.post '/api/v1/name', (req, res) ->
   u = new UserModel()
-  u.name = req.query.name
+  u.name = querystring.escape req.query.name
   u.save()
   res.json u
   
@@ -109,10 +110,8 @@ app.post '/api/v1/endgame', (req, res) ->
 # Admin shit
 
 app.get '/startGamePhish', (req, res) ->
-  res.write 'hello'
   gameStarted = true
   runSites ->
-    res.write 'hello!'
     for h1 of scores
       for h2 of scores
         if h1 isnt h2
@@ -182,10 +181,6 @@ io.sockets.on "connection", (socket) ->
     u = new UserModel()
     u.findById data.id, (err, user) ->
       unless err
-        sid = 
-        if bet > user.money
-          res.json
-            error: 'Not enough money!'
         user.horse = req.query.horse
         user.bet = req.query.bet
         user.save()

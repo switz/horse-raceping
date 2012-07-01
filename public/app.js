@@ -23,7 +23,7 @@ $(function() {
       return this;
     },
     enterGame: function() {
-      var name = $('#name').val();
+      var name = _.escape($('#name').val());
       $.post('/api/v1/name?name='+name, function(data) {
         App.user = new App.Game.User(data);
         // setup layout for game;
