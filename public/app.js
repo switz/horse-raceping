@@ -91,7 +91,9 @@ $(function() {
         var wall = document.createElement('div');
         var horse = document.createElement('div');
         var img = document.createElement('img');
+        var dark = document.creatElement('div');
         img.src = '../images/small-horse-red.png';
+        $(div).addClass('dark');
         $(wall).addClass('wall')
           .attr('id', 'wall' + i)
           .css('bottom',i*20)
