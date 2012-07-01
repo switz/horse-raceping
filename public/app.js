@@ -90,8 +90,17 @@ $(function() {
       for (var i = 0; i < 6; i++) {
         var wall = document.createElement('div');
         var horse = document.createElement('div');
-        $(wall).addClass('wall').attr('id', 'wall' + i);
-        $(horse).addClass('horse').attr('id', 'horse' + i);
+        var img = document.createElement('img');
+        img.src = '../images/small-horse-red.png';
+        $(wall).addClass('wall')
+          .attr('id', 'wall' + i)
+          .css('bottom',i*20)
+          .css('z-index', 1000 + 1000 * (6-i));
+        $(horse).addClass('horse')
+          .attr('id', 'horse' + i)
+          .css('bottom',i*20+40)
+          //.css('left', i * 20)
+          .css('z-index', 950 + 1000 * (6-i));
         this.$el.append(horse);
         this.$el.append(wall);
       }
@@ -212,6 +221,7 @@ $(function() {
   socket.on('startGame', function (startGame) {
     if (startGame)
       gameStarted = true;
+      console.log(startGame);
       // access startGame object
   });
   socket.on('new_bet', function (data) {

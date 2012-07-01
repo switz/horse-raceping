@@ -74,3 +74,25 @@ body > div.row-fluid {
   background: grey;
   color: white;
 }
+
+#track-container {
+  position: relative;
+  clear: both;
+  width: 100%;
+  height: 400px;
+}
+
+.horse {
+  position:absolute;
+  width: 100px;
+  height: 100px;
+  background: url(../images/small-horse-red.png);
+  background-size: cover;
+}
+
+.wall {
+  position: absolute;
+  width: 100%;
+  height: 60px;
+  background-color: #8B4513;
+}
