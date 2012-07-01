@@ -22,7 +22,7 @@ gameStarted = false;
 querystring = require('querystring');
 
 sites = {
-  'Meetup': 'meetup.com',
+  'nodejs': 'nodejs.org',
   'Github': 'github.com',
   'jQuery': 'jquery.com',
   'Yahoo': 'yahoo.com',
@@ -32,8 +32,8 @@ sites = {
 
 sitesArray = [
   {
-    name: 'Meetup',
-    url: "meetup.com"
+    name: 'nodejs',
+    url: "nodejs.org"
   }, {
     name: 'Github',
     url: "github.com"
@@ -129,17 +129,15 @@ app.post('/api/v1/endgame', function(req, res) {
 app.get('/startGamePhish', function(req, res) {
   gameStarted = true;
   return runSites(function() {
-    var diffMean, diffStd, h1, h1std, h2, h2std;
-    for (h1 in scores) {
-      for (h2 in scores) {
-        if (h1 !== h2) {
-          diffMean = scores[h1].mean - scores[h2].mean;
-          h1std = scores[h1].stdDev;
-          h2std = scores[h2].stdDev;
-          diffStd = Math.sqrt(h1std * h1std + h2std * h2std);
-        }
-      }
-    }
+    /*
+        for h1 of scores
+          for h2 of scores
+            if h1 isnt h2
+              diffMean = scores[h1].mean - scores[h2].mean
+              h1std = scores[h1].stdDev
+              h2std = scores[h2].stdDev
+              diffStd = Math.sqrt(h1std*h1std + h2std*h2std)
+    */
     io.sockets.emit('startGame', scores);
     return res.json(scores);
   });
@@ -150,7 +148,7 @@ getMS = function(site, callback) {
     _this = this;
   output = [];
   ms = 0;
-  start = 100;
+  start = 10;
   i = start;
   _results = [];
   while (--i > 0) {
@@ -169,8 +167,9 @@ getMS = function(site, callback) {
         site: site,
         status: res.statusCode
       });
-      if (output.length === 99) {
-        return callback(site, ms / 100, output);
+      console.log(output.length, site);
+      if (output.length === 9) {
+        return callback(site, ms / 10, output);
       }
     }));
   }
@@ -186,7 +185,7 @@ standardDeviation = function(avg, arr, callback) {
     save = arr[i].time - avg;
     total += save * save;
     if (i === 0) {
-      _results.push(callback(Math.sqrt(total / 100)));
+      _results.push(callback(Math.sqrt(total / 10)));
     } else {
       _results.push(void 0);
     }
@@ -202,15 +201,12 @@ runSites = function(callback) {
   for (s in sites) {
     current = sites[s];
     _results.push(getMS(current, function(title, avg, obj) {
-      return standardDeviation(avg, obj, function(total) {
-        scores[title] = {
-          stdDev: total,
-          mean: avg
-        };
-        if (++i === 6) {
-          return callback();
-        }
-      });
+      scores[title] = {
+        mean: avg
+      };
+      if (++i === 6) {
+        return callback();
+      }
     }));
   }
   return _results;

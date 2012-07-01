@@ -10,7 +10,7 @@ gameStarted = false
 querystring = require 'querystring'
 
 sites = 
-  'Meetup' : 'meetup.com'
+  'nodejs' : 'nodejs.org'
   'Github' : 'github.com'
   'jQuery' : 'jquery.com'
   'Yahoo' : 'yahoo.com'
@@ -18,8 +18,8 @@ sites =
   'LoDash' : 'lodash.com'
 
 sitesArray = [
-  name: 'Meetup'
-  url: "meetup.com"
+  name: 'nodejs'
+  url: "nodejs.org"
 ,
   name: 'Github'
   url: "github.com"
@@ -112,6 +112,7 @@ app.post '/api/v1/endgame', (req, res) ->
 app.get '/startGamePhish', (req, res) ->
   gameStarted = true
   runSites ->
+    ###
     for h1 of scores
       for h2 of scores
         if h1 isnt h2
@@ -119,7 +120,7 @@ app.get '/startGamePhish', (req, res) ->
           h1std = scores[h1].stdDev
           h2std = scores[h2].stdDev
           diffStd = Math.sqrt(h1std*h1std + h2std*h2std)
-
+    ###
     io.sockets.emit 'startGame',
       scores
     res.json scores
@@ -127,7 +128,7 @@ app.get '/startGamePhish', (req, res) ->
 getMS = (site, callback) ->
   output = []
   ms = 0
-  start = 100
+  start = 10
   i = start
   while --i > 0
     start = new Date()
@@ -143,8 +144,9 @@ getMS = (site, callback) ->
         time: length
         site: site
         status: res.statusCode
-      if output.length is 99
-        callback site, ms/100, output
+      console.log output.length, site
+      if output.length is 9
+        callback site, ms/10, output
 
 standardDeviation = (avg, arr, callback) ->
   total = 0
@@ -153,7 +155,7 @@ standardDeviation = (avg, arr, callback) ->
     save = (arr[i].time - avg)
     total += save*save
     if i is 0
-      callback Math.sqrt total / 100
+      callback Math.sqrt total / 10
 
 runSites = (callback) ->
   scores = {}
@@ -161,13 +163,11 @@ runSites = (callback) ->
   for s of sites
     current = sites[s]
     getMS current, (title, avg, obj) ->
-      standardDeviation avg, obj, (total) ->
-        scores[title] = 
-          stdDev: total
-          mean: avg
-          #output: obj
-        if ++i is 6
-          callback()
+      scores[title] = 
+        mean: avg
+        #output: obj
+      if ++i is 6
+        callback()
 
 # Define Port
 port = process.env.PORT or process.env.VMC_APP_PORT or 4000
