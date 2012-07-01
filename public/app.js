@@ -222,13 +222,46 @@ $(function() {
     if (startGame)
       gameStarted = true;
       (new Audio("sounds/horseracestart.mp3")).play();
-      console.log(startGame);
       var keys = _.keys(startGame);
+      var winner = {
+        score: 10000,
+        name: ''
+      }
+      var loser = {
+        score: 0,
+        name: ''
+      }
       setTimeout(function() {
       _.each(keys, function(key, i) {
+        mean = startGame[key].mean
+        if (mean < winner.score)
+          winner = {
+            score: mean,
+            name: key
+          }
+        if (mean > loser.score)
+          loser = {
+            score: mean,
+            name: key
+          }
         $('#horse'+i).animate({
           left:'670px'
-        }, (startGame[key].mean * 10));
+        }, (mean * 40), function() {
+          if (key === loser.name) {
+            alert(winner.name + ' was the winner!')
+            selected = $('.selected').html();
+            console.log(App)
+            if (selected.indexOf(winner.name) >= 0) {
+              alert('You Won!')
+              score = 100 + Math.floor(App.user.attributes.bet);
+              $('#score').html('$'+ score);
+            }
+            else {
+              alert('You Lost, Noob!')
+              $('#score').html('$'+ (100 - App.user.attributes.bet));
+            }
+          }
+        });
       });
       }, 4000);
       // access startGame object

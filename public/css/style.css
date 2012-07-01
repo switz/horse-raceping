@@ -66,6 +66,7 @@ body > div.row-fluid {
 
 #main #userpanel-container {
   background: white;
+  height: 100%;
 }
 
 #main #userpanel-container .bet {
@@ -90,6 +91,7 @@ body > div.row-fluid {
   position:absolute;
   width: 100px;
   height: 100px;
+  margin-top: 5px;
   background: url(../images/small-horse-red.png);
   background-size: cover;
 }
