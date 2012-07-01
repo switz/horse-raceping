@@ -224,11 +224,13 @@ $(function() {
       (new Audio("sounds/horseracestart.mp3")).play();
       console.log(startGame);
       var keys = _.keys(startGame);
+      setTimeout(function() {
       _.each(keys, function(key, i) {
         $('#horse'+i).animate({
           left:'670px'
-        }, (startGame[key].mean * 2));
+        }, (startGame[key].mean * 10));
       });
+      }, 4000);
       // access startGame object
   });
   socket.on('new_bet', function (data) {
