@@ -91,9 +91,7 @@ $(function() {
         var wall = document.createElement('div');
         var horse = document.createElement('div');
         var img = document.createElement('img');
-        var dark = document.creatElement('div');
         img.src = '../images/small-horse-red.png';
-        $(div).addClass('dark');
         $(wall).addClass('wall')
           .attr('id', 'wall' + i)
           .css('bottom',i*20)
@@ -248,7 +246,7 @@ $(function() {
           }
         $('#horse'+i).animate({
           left:'670px'
-        }, (mean * 40), function() {
+        }, (mean * 30), function() {
           if (key === loser.name) {
             alert(winner.name + ' was the winner!')
             selected = $('.selected').html();

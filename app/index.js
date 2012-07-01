@@ -22,7 +22,7 @@ gameStarted = false;
 querystring = require('querystring');
 
 sites = {
-  'nodejs': 'nodejs.org',
+  'PHP': 'php.net',
   'Github': 'github.com',
   'jQuery': 'jquery.com',
   'Yahoo': 'yahoo.com',
@@ -32,8 +32,8 @@ sites = {
 
 sitesArray = [
   {
-    name: 'nodejs',
-    url: "nodejs.org"
+    name: 'PHP',
+    url: "php.net"
   }, {
     name: 'Github',
     url: "github.com"
