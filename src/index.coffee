@@ -144,7 +144,6 @@ getMS = (site, callback) ->
         time: length
         site: site
         status: res.statusCode
-      console.log output.length, site
       if output.length is 9
         callback site, ms/10, output
 
